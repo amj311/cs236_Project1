@@ -79,5 +79,12 @@ TEST(TokenizerTest, AllSpecialCharacters) {
 	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
 	EXPECT_EQ(res, "COMMAPERIODQ_MARKLEFT_PARENRIGHT_PARENCOLONCOLON_DASHMULTIPLYADD");
 }
+TEST(TokenizerTest, SchemSpace) {
+	string test = "Schem ";
+	Tokenizer tokenizer(test);
+	string res1 = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res1, "(ID,\"Schem\",1)");
+}
+
 
 

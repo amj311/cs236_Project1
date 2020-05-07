@@ -17,7 +17,7 @@ private:
 
 	void pushChar();
 	void skipChar();
-	Token handleFoundTokenOfType(TOKEN_TYPE type);
+	Token handleFoundTokenOfType(TOKEN_TYPE type, bool shouldPush);
 
 
 
@@ -37,6 +37,8 @@ private:
 	Token try_ADD();
 
 	// Keywords
+	Token try_SCHEMES();
+	Token try_FACTS();
 	Token try_QUERIES();
 	Token try_RULES();
 	Token try_ID();

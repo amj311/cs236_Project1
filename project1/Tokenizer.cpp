@@ -22,9 +22,9 @@ void Tokenizer::skipChar()
 	input = input.substr(1, input.size() - 1);
 }
 
-Token Tokenizer::handleFoundTokenOfType(TOKEN_TYPE type)
+Token Tokenizer::handleFoundTokenOfType(TOKEN_TYPE type, bool shouldPush = true)
 {
-	pushChar();
+	if (shouldPush) pushChar();
 	return Token(type, tokenValue, lineCtr);
 }
 
@@ -49,6 +49,8 @@ Token Tokenizer::state_0()
 		case '*': return try_MULTIPLY();
 		case '+': return try_ADD();
 		// Keywords
+		case 'S': return try_SCHEMES();
+		case 'F': return try_FACTS();
 		case 'Q': return try_QUERIES();
 		case 'R': return try_RULES();
 		default:
@@ -116,6 +118,53 @@ Token Tokenizer::try_ADD()
 
 
 // KEYWORDS
+
+Token Tokenizer::try_SCHEMES()
+{
+	if (input.front() != 'S') throw exception("Arrived at try_SCHEMES but char was not 'S'!");
+	else pushChar();
+
+	if (input.front() == 'c') pushChar();
+	else return try_ID();
+
+	if (input.front() == 'h') pushChar();
+	else return try_ID();
+
+	if (input.front() == 'e') pushChar();
+	else return try_ID();
+
+	if (input.front() == 'm') pushChar();
+	else return try_ID();
+
+	if (input.front() == 'e') pushChar();
+	else return try_ID();
+
+	if (input.front() == 's') {
+		return handleFoundTokenOfType(SCHEMES);
+	}
+	else return try_ID();
+}
+
+Token Tokenizer::try_FACTS()
+{
+	if (input.front() != 'F') throw exception("Arrived at try_FACTS but char was not 'F'!");
+	else pushChar();
+
+	if (input.front() == 'a') pushChar();
+	else return try_ID();
+
+	if (input.front() == 'c') pushChar();
+	else return try_ID();
+
+	if (input.front() == 't') pushChar();
+	else return try_ID();
+
+	if (input.front() == 's') {
+		return handleFoundTokenOfType(FACTS);
+	}
+	else return try_ID();
+}
+
 Token Tokenizer::try_QUERIES()
 {
 	if (input.front() != 'Q') throw exception("Arrived at try_QUERIES but char was not 'Q'!");
@@ -164,5 +213,6 @@ Token Tokenizer::try_RULES()
 
 Token Tokenizer::try_ID()
 {
+	if (isspace(input.front())) return handleFoundTokenOfType(ID, false);
 	return Token(ID,"This is a false return",500);
 }
