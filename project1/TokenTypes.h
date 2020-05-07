@@ -2,6 +2,7 @@
 #define TOKEN_TYPES_H
 
 #include <string>
+#include <vector>
 using namespace std;
 
 enum TOKEN_TYPE {
@@ -23,27 +24,6 @@ enum TOKEN_TYPE {
 	COMMENT,
 	UNDEFINED,
 	EOF_TYPE
-};
-
-string TOKEN_TYPE_STRINGS[] = {
-	"COMMA",
-	"PERIOD",
-	"Q_MARK",
-	"LEFT_PAREN",
-	"RIGHT_PAREN",
-	"COLON",
-	"COLON_DASH",
-	"MULTIPLY",
-	"ADD",
-	"SCHEMES",
-	"FACTS",
-	"RULES",
-	"QUERIES",
-	"ID",
-	"STRING",
-	"COMMENT",
-	"UNDEFINED",
-	"EOF"
 };
 
 #endif // !TOKEN_TYPES_H
