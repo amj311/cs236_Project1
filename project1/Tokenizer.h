@@ -11,7 +11,16 @@ public:
 	Token getNextToken();
 private:
 	string input;
-	size_t idx = 0;
+	string tokenValue = "";
+	int linePos = 1;
+
+	string advanceChar();
+	Token handleFoundTokenOfType(TOKEN_TYPE type);
+
+	// AUTOMATA
+	Token state_0();
+	Token try_Queries();
+	Token try_ID();
 };
 
 #endif
