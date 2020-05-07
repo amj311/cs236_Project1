@@ -1,12 +1,5 @@
 #include "pch.h"
-#include "../project1/Lexer.h"
-
-
-TEST(TokenTypesTest, TypeStringsDef) {
-	string comma = TOKEN_TYPE_STRINGS[COMMA];
-	EXPECT_EQ(comma, "COMMA");
-}
-
+#include "../project1/Token.h"
 
 
 TEST(TokenTest, ConstrType) {

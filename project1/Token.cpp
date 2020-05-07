@@ -24,6 +24,5 @@ int Token::getLine()
 
 string Token::toString()
 {
-	string test = "test";
-	return "(" + test + ",\"" + value + "\"," + to_string(line) + ")";
+	return "(" + TOKEN_STRINGS[type] + ",\"" + value + "\"," + to_string(line) + ")";
 }

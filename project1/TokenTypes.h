@@ -1,10 +1,6 @@
 #ifndef TOKEN_TYPES_H
 #define TOKEN_TYPES_H
 
-#include <string>
-#include <vector>
-using namespace std;
-
 enum TOKEN_TYPE {
 	COMMA,
 	PERIOD,
@@ -26,4 +22,4 @@ enum TOKEN_TYPE {
 	EOF_TYPE
 };
 
-#endif // !TOKEN_TYPES_H
+#endif

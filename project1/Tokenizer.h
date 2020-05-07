@@ -1,15 +1,17 @@
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
-#include <string>
 #include "Token.h"
-using namespace std;
 
 class Tokenizer
 {
+public:
+	Tokenizer() {};
+	Tokenizer(string& input);
+	Token getNextToken();
 private:
 	string input;
+	size_t idx = 0;
 };
 
-
-#endif // !TOKENIZER_H
+#endif
