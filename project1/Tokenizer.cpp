@@ -24,28 +24,41 @@ void Tokenizer::skipChar()
 
 Token Tokenizer::handleFoundTokenOfType(TOKEN_TYPE type)
 {
-	return Token(type, tokenValue, linePos);
+	pushChar();
+	return Token(type, tokenValue, lineCtr);
 }
 
 Token Tokenizer::state_0()
 {
-	switch (input.front())
-	{
-	case ' ':
+	// Whitespaces
+	if (isspace(input.front())) {
+		if (input.front() == '\n') lineCtr++;
 		skipChar();
 		return state_0();
-	case 'Q': return try_Queries();
+	}
+	switch (input.front())
+	{
+	// Special Characters
+	case ':':
+		return try_COLON();
+	// Keywords
+	case 'Q': return try_QUERIES();
 	default:
 		break;
 	}
 }
 
+Token Tokenizer::try_COLON()
+{
+	if (input.front() != ':') throw exception("Arrived at try_COLON but char is not ':'!");
+	else return handleFoundTokenOfType(COLON);
+}
+
 
 // KEYWORDS
-
-Token Tokenizer::try_Queries()
+Token Tokenizer::try_QUERIES()
 {
-	if (input.front() != 'Q') throw exception("Arrived at try_Queries but char was not Q!");
+	if (input.front() != 'Q') throw exception("Arrived at try_QUERIES but char was not Q!");
 	else pushChar();
 
 	if (input.front() == 'u') pushChar();
@@ -64,7 +77,6 @@ Token Tokenizer::try_Queries()
 	else return try_ID();
 
 	if (input.front() == 's') {
-		pushChar();
 		return handleFoundTokenOfType(QUERIES);
 	}
 	else return try_ID();

@@ -2,6 +2,7 @@
 #define TOKENIZER_H
 
 #include "Token.h"
+#include <cctype>
 
 class Tokenizer
 {
@@ -12,7 +13,7 @@ public:
 private:
 	string input;
 	string tokenValue = "";
-	int linePos = 1;
+	int lineCtr = 1;
 
 	void pushChar();
 	void skipChar();
@@ -20,7 +21,12 @@ private:
 
 	// AUTOMATA
 	Token state_0();
-	Token try_Queries();
+
+	// Special Characters
+	Token try_COLON();
+
+	// Keywords
+	Token try_QUERIES();
 	Token try_ID();
 };
 
