@@ -36,17 +36,58 @@ Token Tokenizer::state_0()
 		skipChar();
 		return state_0();
 	}
+
 	switch (input.front())
 	{
-	// Special Characters
-	case ':':
-		return try_COLON();
-	// Keywords
-	case 'Q': return try_QUERIES();
-	case 'R': return try_RULES();
-	default:
-		break;
+		// Special Characters
+		case ',': return try_COMMA();
+		case '.': return try_PERIOD();
+		case '?': return try_Q_MARK();
+		case '(': return try_LEFT_PAREN();
+		case ')': return try_RIGHT_PAREN();
+		case ':': return try_COLON();
+		case '*': return try_MULTIPLY();
+		case '+': return try_ADD();
+		// Keywords
+		case 'Q': return try_QUERIES();
+		case 'R': return try_RULES();
+		default:
+			break;
 	}
+}
+
+
+
+// SPECIAL CHARACTERS
+
+Token Tokenizer::try_COMMA()
+{
+	if (input.front() != ',') throw exception("Arrived at try_COMMA but char is not ','!");
+	else return handleFoundTokenOfType(COMMA);
+}
+
+Token Tokenizer::try_PERIOD()
+{
+	if (input.front() != '.') throw exception("Arrived at try_PERIOD but char is not '.'!");
+	else return handleFoundTokenOfType(PERIOD);
+}
+
+Token Tokenizer::try_Q_MARK()
+{
+	if (input.front() != '?') throw exception("Arrived at try_Q_MARK but char is not '?'!");
+	else return handleFoundTokenOfType(Q_MARK);
+}
+
+Token Tokenizer::try_LEFT_PAREN()
+{
+	if (input.front() != '(') throw exception("Arrived at try_LEFT_PAREN but char is not '('!");
+	else return handleFoundTokenOfType(LEFT_PAREN);
+}
+
+Token Tokenizer::try_RIGHT_PAREN()
+{
+	if (input.front() != ')') throw exception("Arrived at try_RIGHT_PAREN but char is not ')'!");
+	else return handleFoundTokenOfType(RIGHT_PAREN);
 }
 
 Token Tokenizer::try_COLON()
@@ -58,6 +99,21 @@ Token Tokenizer::try_COLON()
 	}
 	else return handleFoundTokenOfType(COLON);
 }
+
+Token Tokenizer::try_MULTIPLY()
+{
+	if (input.front() != '*') throw exception("Arrived at try_MULTIPLY but char is not '*'!");
+	else return handleFoundTokenOfType(MULTIPLY);
+}
+
+Token Tokenizer::try_ADD()
+{
+	if (input.front() != '+') throw exception("Arrived at try_ADD but char is not '+'!");
+	else return handleFoundTokenOfType(ADD);
+}
+
+
+
 
 // KEYWORDS
 Token Tokenizer::try_QUERIES()

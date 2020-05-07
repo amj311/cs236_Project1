@@ -22,4 +22,5 @@ enum TOKEN_TYPE {
 	EOF_TYPE
 };
 
+
 #endif

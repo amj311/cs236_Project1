@@ -57,5 +57,49 @@ TEST(TokenizerTest, ColonDash) {
 	string res = tokenizer.getNextToken().toString();
 	EXPECT_EQ(res, "(COLON_DASH,\":-\",1)");
 }
+TEST(TokenizerTest, ColonDashComma) {
+	string test = ":-,";
+	Tokenizer tokenizer(test);
+	tokenizer.getNextToken();
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(COMMA,\",\",1)");
+}
+TEST(TokenizerTest, AllSpecialCharacters) {
+
+	std::string TYPE_STRINGS[] = {
+		"COMMA",
+		"PERIOD",
+		"Q_MARK",
+		"LEFT_PAREN",
+		"RIGHT_PAREN",
+		"COLON",
+		"COLON_DASH",
+		"MULTIPLY",
+		"ADD",
+		"SCHEMES",
+		"FACTS",
+		"RULES",
+		"QUERIES",
+		"ID",
+		"STRING",
+		"COMMENT",
+		"UNDEFINED",
+		"EOF_TYPE"
+	};
+
+	string test = ",.?()::-*+";
+	Tokenizer tokenizer(test);
+	string res = "";
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	EXPECT_EQ(res, "COMMAPERIODQ_MARKLEFT_PARENRIGHT_PARENCOLONCOLON_DASHMULTIPLYADD");
+}
 
 
