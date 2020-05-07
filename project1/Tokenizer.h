@@ -19,6 +19,10 @@ private:
 	void skipChar();
 	Token handleFoundTokenOfType(TOKEN_TYPE type);
 
+
+
+
+
 	// AUTOMATA
 	Token state_0();
 
@@ -27,6 +31,7 @@ private:
 
 	// Keywords
 	Token try_QUERIES();
+	Token try_RULES();
 	Token try_ID();
 };
 

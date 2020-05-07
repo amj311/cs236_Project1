@@ -43,6 +43,7 @@ Token Tokenizer::state_0()
 		return try_COLON();
 	// Keywords
 	case 'Q': return try_QUERIES();
+	case 'R': return try_RULES();
 	default:
 		break;
 	}
@@ -58,7 +59,7 @@ Token Tokenizer::try_COLON()
 // KEYWORDS
 Token Tokenizer::try_QUERIES()
 {
-	if (input.front() != 'Q') throw exception("Arrived at try_QUERIES but char was not Q!");
+	if (input.front() != 'Q') throw exception("Arrived at try_QUERIES but char was not 'Q'!");
 	else pushChar();
 
 	if (input.front() == 'u') pushChar();
@@ -78,6 +79,26 @@ Token Tokenizer::try_QUERIES()
 
 	if (input.front() == 's') {
 		return handleFoundTokenOfType(QUERIES);
+	}
+	else return try_ID();
+}
+
+Token Tokenizer::try_RULES()
+{
+	if (input.front() != 'R') throw exception("Arrived at try_RULES but char was not 'R'!");
+	else pushChar();
+
+	if (input.front() == 'u') pushChar();
+	else return try_ID();
+
+	if (input.front() == 'l') pushChar();
+	else return try_ID();
+
+	if (input.front() == 'e') pushChar();
+	else return try_ID();
+
+	if (input.front() == 's') {
+		return handleFoundTokenOfType(RULES);
 	}
 	else return try_ID();
 }

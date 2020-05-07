@@ -26,11 +26,11 @@ TEST(TokenizerTest, SpacesQueries) {
 	string res1 = tokenizer.getNextToken().toString();
 	EXPECT_EQ(res1, "(QUERIES,\"Queries\",1)");
 }
-TEST(TokenizerTest, TabsQueries) {
-	string test = "\t\tQueries:";
+TEST(TokenizerTest, TabsRules) {
+	string test = "\t\tRules:";
 	Tokenizer tokenizer(test);
 	string res1 = tokenizer.getNextToken().toString();
-	EXPECT_EQ(res1, "(QUERIES,\"Queries\",1)");
+	EXPECT_EQ(res1, "(RULES,\"Rules\",1)");
 }
 TEST(TokenizerTest, NewlinesQueries) {
 	string test = "\n\nQueries:";
