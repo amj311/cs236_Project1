@@ -14,7 +14,8 @@ private:
 	string tokenValue = "";
 	int linePos = 1;
 
-	string advanceChar();
+	void pushChar();
+	void skipChar();
 	Token handleFoundTokenOfType(TOKEN_TYPE type);
 
 	// AUTOMATA

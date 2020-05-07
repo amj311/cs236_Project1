@@ -11,12 +11,15 @@ Token Tokenizer::getNextToken()
 	return state_0();
 }
 
-string Tokenizer::advanceChar()
+void Tokenizer::pushChar()
 {
 	tokenValue += input[0];
-	input = input.substr(1, input.size()-1);
-	cout << input.substr(0, 5) << endl;
-	return input;
+	skipChar();
+}
+
+void Tokenizer::skipChar()
+{
+	input = input.substr(1, input.size() - 1);
 }
 
 Token Tokenizer::handleFoundTokenOfType(TOKEN_TYPE type)
@@ -28,6 +31,9 @@ Token Tokenizer::state_0()
 {
 	switch (input.front())
 	{
+	case ' ':
+		skipChar();
+		return state_0();
 	case 'Q': return try_Queries();
 	default:
 		break;
@@ -40,25 +46,25 @@ Token Tokenizer::state_0()
 Token Tokenizer::try_Queries()
 {
 	if (input.front() != 'Q') throw exception("Arrived at try_Queries but char was not Q!");
-	else advanceChar();
+	else pushChar();
 
-	if (input.front() == 'u') advanceChar();
+	if (input.front() == 'u') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'e') advanceChar();
+	if (input.front() == 'e') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'r') advanceChar();
+	if (input.front() == 'r') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'i') advanceChar();
+	if (input.front() == 'i') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'e') advanceChar();
+	if (input.front() == 'e') pushChar();
 	else return try_ID();
 
 	if (input.front() == 's') {
-		advanceChar();
+		pushChar();
 		return handleFoundTokenOfType(QUERIES);
 	}
 	else return try_ID();

@@ -26,6 +26,12 @@ TEST(TokenizerTest, QueriesColon1) {
 	string res1 = tokenizer.getNextToken().toString();
 	EXPECT_EQ(res1, "(QUERIES,\"Queries\",1)");
 }
+TEST(TokenizerTest, SpaceQueries) {
+	string test = " Queries:";
+	Tokenizer tokenizer(test);
+	string res1 = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res1, "(QUERIES,\"Queries\",1)");
+}
 //TEST(TokenizerTest, QueriesColon2) {
 //	string test = "Queries:";
 //	Tokenizer tokenizer(test);
