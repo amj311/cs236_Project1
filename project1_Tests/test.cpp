@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "../project1/Lexer.h"
 
-
 TEST(TokenTest, ConstrType) {
 	Token token(COMMA, ";", 5);
 	EXPECT_EQ(token.getType(), COMMA);
@@ -65,40 +64,19 @@ TEST(TokenizerTest, ColonDashComma) {
 	EXPECT_EQ(res, "(COMMA,\",\",1)");
 }
 TEST(TokenizerTest, AllSpecialCharacters) {
-
-	std::string TYPE_STRINGS[] = {
-		"COMMA",
-		"PERIOD",
-		"Q_MARK",
-		"LEFT_PAREN",
-		"RIGHT_PAREN",
-		"COLON",
-		"COLON_DASH",
-		"MULTIPLY",
-		"ADD",
-		"SCHEMES",
-		"FACTS",
-		"RULES",
-		"QUERIES",
-		"ID",
-		"STRING",
-		"COMMENT",
-		"UNDEFINED",
-		"EOF_TYPE"
-	};
-
 	string test = ",.?()::-*+";
+	Token token(COMMA,",",5);
 	Tokenizer tokenizer(test);
 	string res = "";
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
-	res += TYPE_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
 	EXPECT_EQ(res, "COMMAPERIODQ_MARKLEFT_PARENRIGHT_PARENCOLONCOLON_DASHMULTIPLYADD");
 }
 

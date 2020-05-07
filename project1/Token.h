@@ -45,6 +45,4 @@ public:
 	};
 };
 
-
-
 #endif // !TOKEN_H
