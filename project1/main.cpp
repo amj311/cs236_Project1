@@ -1,11 +1,18 @@
 #include <iostream>
+#include <string>
+#include <fstream>
 using namespace std;
 
 #include "Lexer.h"
 
-int main() {
-	string myString = "this is a string";
+int main(int argc, char** argv)
+{
 
-	Lexer lexer = Lexer(myString);
-	return 0;
+    ifstream ifs(argv[1]);
+    string content((istreambuf_iterator<char>(ifs)),
+        (istreambuf_iterator<char>()));
+
+    Lexer lexer(content);
+
+    return 0;
 }

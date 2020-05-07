@@ -5,6 +5,7 @@
 #include <string>
 using namespace std;
 
+#include "Token.h"
 
 class Lexer
 {
