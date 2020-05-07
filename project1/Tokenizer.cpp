@@ -69,6 +69,7 @@ Token Tokenizer::state_0()
 		case '*': return try_MULTIPLY();
 		case '+': return try_ADD();
 		case '\'': return try_STRING();
+		case '#': return try_COMMENT();
 		
 		// Keywords
 		case 'S': return try_SCHEMES();
@@ -148,10 +149,52 @@ Token Tokenizer::try_STRING()
 		if (curChar() == '\n') lineCtr++;
 		pushChar();
 		//cout << "Running string: \"" << tokenValue << curChar() << "\"" << endl;
-	} while ( !(curChar() == '\'' || isEOF()) );
+	} while (!(curChar() == '\'' || isEOF()));
 
 	if (curChar() == '\'') return handleFoundTokenOfType(STRING);
 	else if (isEOF()) return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+}
+
+
+Token Tokenizer::try_COMMENT()
+{
+	cout << "Entered try_COMMENT. Input is " + input << endl;
+	if (curChar() != '#') throw exception("Arrived at try_COMMENT but char is not '#'!");
+
+	bool commentEnd = false;
+
+	// MultiLine Comment
+	if (nextChar() == '|') {
+		pushChar(); // Push #
+
+		do {
+			if (curChar() == '\n') lineCtr++;
+			pushChar();
+			if ( (curChar() == '|' && nextChar() == '#') || isEOF()) commentEnd = true;
+		} while (!commentEnd);
+
+		if (curChar() == '|') {
+			pushChar(); // Push |
+			return handleFoundTokenOfType(COMMENT); // Will push #
+		}
+		else if (isEOF()) return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+	}
+
+	// Inline Comment
+	else {
+		do {
+			pushChar();
+			cout << "Running Comment: \"" << tokenValue << curChar() << "\"" << endl;
+			if (nextChar() == '\n' || isEOF()) commentEnd = true;
+		} while (!commentEnd);
+
+		if (nextChar() == '\n') {
+			pushChar(); // Push last char of comment before \n
+			return handleFoundTokenOfType(COMMENT, false);
+		}
+		else if (isEOF()) return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+	}
+
 }
 
 

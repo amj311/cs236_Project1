@@ -125,4 +125,32 @@ TEST(TokenizerTest, _OpenMultilineString_) {
 }
 
 
+TEST(TokenizerTest, GoodMultilineComment) {
+	string test = "\n#|comment >= \nwow|#\n";
+	Tokenizer tokenizer(test);
+	string res1 = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res1, "(COMMENT,\"#|comment >= \nwow|#\",2)");
+}
+TEST(TokenizerTest, BadMultilineComment_EOF) {
+	string test = "\n#|comment >= \nwow| \n";
+	Tokenizer tokenizer(test);
+	string res1 = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res1, "(UNDEFINED,\"#|comment >= \nwow| \n\",2)");
+}
+TEST(TokenizerTest, GoodInlineComment) {
+	string test = "\nQueries #comment >= wow| \n";
+	Tokenizer tokenizer(test);
+	tokenizer.getNextToken();
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(COMMENT,\"#comment >= wow| \",2)");
+}
+TEST(TokenizerTest, BadInlineComment) {
+	string test = "\nQueries #comment \n>= wow| \n";
+	Tokenizer tokenizer(test);
+	tokenizer.getNextToken();
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(COMMENT,\"#comment \",2)");
+}
+
+
 

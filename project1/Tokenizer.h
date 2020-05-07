@@ -40,6 +40,7 @@ private:
 	Token try_MULTIPLY();
 	Token try_ADD();
 	Token try_STRING();
+	Token try_COMMENT();
 
 	// Keywords
 	Token try_SCHEMES();
