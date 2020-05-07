@@ -52,9 +52,12 @@ Token Tokenizer::state_0()
 Token Tokenizer::try_COLON()
 {
 	if (input.front() != ':') throw exception("Arrived at try_COLON but char is not ':'!");
+	if (input[1] == '-') {
+		pushChar();
+		return handleFoundTokenOfType(COLON_DASH);
+	}
 	else return handleFoundTokenOfType(COLON);
 }
-
 
 // KEYWORDS
 Token Tokenizer::try_QUERIES()

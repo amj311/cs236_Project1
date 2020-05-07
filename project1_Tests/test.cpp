@@ -51,5 +51,11 @@ TEST(TokenizerTest, QueriesColon2) {
 	string res2 = tokenizer.getNextToken().toString();
 	EXPECT_EQ(res2, "(COLON,\":\",1)");
 }
+TEST(TokenizerTest, ColonDash) {
+	string test = ":-";
+	Tokenizer tokenizer(test);
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(COLON_DASH,\":-\",1)");
+}
 
 

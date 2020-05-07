@@ -27,7 +27,14 @@ private:
 	Token state_0();
 
 	// Special Characters
+	Token try_COMMA();
+	Token try_PERIOD();
+	Token try_Q_MARK();
+	Token try_LFET_PAREN();
+	Token try_RIGHT_PAREN();
 	Token try_COLON();
+	Token try_MULTIPLY();
+	Token try_ADD();
 
 	// Keywords
 	Token try_QUERIES();
