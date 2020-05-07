@@ -11,6 +11,22 @@ Token Tokenizer::getNextToken()
 	return state_0();
 }
 
+bool Tokenizer::isEOF()
+{
+	if (input.size() == 0 || (isspace(curChar()) && input.size() == 1) ) return true;
+	return false;
+}
+
+char Tokenizer::curChar()
+{
+	return input[0];
+}
+
+char Tokenizer::nextChar()
+{
+	return input[1];
+}
+
 void Tokenizer::pushChar()
 {
 	tokenValue += input[0];
@@ -25,19 +41,23 @@ void Tokenizer::skipChar()
 Token Tokenizer::handleFoundTokenOfType(TOKEN_TYPE type, bool shouldPush = true)
 {
 	if (shouldPush) pushChar();
-	return Token(type, tokenValue, lineCtr);
+	return Token(type, tokenValue, tokenLine);
 }
 
 Token Tokenizer::state_0()
 {
 	// Whitespaces
-	if (isspace(input.front())) {
-		if (input.front() == '\n') lineCtr++;
+	if (isEOF()) return handleFoundTokenOfType(EOF_TYPE, false);
+
+	if (isspace(curChar())) {
+		if (curChar() == '\n') lineCtr++;
 		skipChar();
 		return state_0();
 	}
 
-	switch (input.front())
+	tokenLine = lineCtr;
+
+	switch (curChar())
 	{
 		// Special Characters
 		case ',': return try_COMMA();
@@ -48,12 +68,17 @@ Token Tokenizer::state_0()
 		case ':': return try_COLON();
 		case '*': return try_MULTIPLY();
 		case '+': return try_ADD();
+		case '\'': return try_STRING();
+		
 		// Keywords
 		case 'S': return try_SCHEMES();
 		case 'F': return try_FACTS();
 		case 'Q': return try_QUERIES();
 		case 'R': return try_RULES();
+
 		default:
+			if (isalpha(curChar())) return try_ID();
+			else throw exception("Invlaid starting char: " + curChar());
 			break;
 	}
 }
@@ -64,38 +89,38 @@ Token Tokenizer::state_0()
 
 Token Tokenizer::try_COMMA()
 {
-	if (input.front() != ',') throw exception("Arrived at try_COMMA but char is not ','!");
+	if (curChar() != ',') throw exception("Arrived at try_COMMA but char is not ','!");
 	else return handleFoundTokenOfType(COMMA);
 }
 
 Token Tokenizer::try_PERIOD()
 {
-	if (input.front() != '.') throw exception("Arrived at try_PERIOD but char is not '.'!");
+	if (curChar() != '.') throw exception("Arrived at try_PERIOD but char is not '.'!");
 	else return handleFoundTokenOfType(PERIOD);
 }
 
 Token Tokenizer::try_Q_MARK()
 {
-	if (input.front() != '?') throw exception("Arrived at try_Q_MARK but char is not '?'!");
+	if (curChar() != '?') throw exception("Arrived at try_Q_MARK but char is not '?'!");
 	else return handleFoundTokenOfType(Q_MARK);
 }
 
 Token Tokenizer::try_LEFT_PAREN()
 {
-	if (input.front() != '(') throw exception("Arrived at try_LEFT_PAREN but char is not '('!");
+	if (curChar() != '(') throw exception("Arrived at try_LEFT_PAREN but char is not '('!");
 	else return handleFoundTokenOfType(LEFT_PAREN);
 }
 
 Token Tokenizer::try_RIGHT_PAREN()
 {
-	if (input.front() != ')') throw exception("Arrived at try_RIGHT_PAREN but char is not ')'!");
+	if (curChar() != ')') throw exception("Arrived at try_RIGHT_PAREN but char is not ')'!");
 	else return handleFoundTokenOfType(RIGHT_PAREN);
 }
 
 Token Tokenizer::try_COLON()
 {
-	if (input.front() != ':') throw exception("Arrived at try_COLON but char is not ':'!");
-	if (input[1] == '-') {
+	if (curChar() != ':') throw exception("Arrived at try_COLON but char is not ':'!");
+	if (nextChar() == '-') {
 		pushChar();
 		return handleFoundTokenOfType(COLON_DASH);
 	}
@@ -104,14 +129,29 @@ Token Tokenizer::try_COLON()
 
 Token Tokenizer::try_MULTIPLY()
 {
-	if (input.front() != '*') throw exception("Arrived at try_MULTIPLY but char is not '*'!");
+	if (curChar() != '*') throw exception("Arrived at try_MULTIPLY but char is not '*'!");
 	else return handleFoundTokenOfType(MULTIPLY);
 }
 
 Token Tokenizer::try_ADD()
 {
-	if (input.front() != '+') throw exception("Arrived at try_ADD but char is not '+'!");
+	if (curChar() != '+') throw exception("Arrived at try_ADD but char is not '+'!");
 	else return handleFoundTokenOfType(ADD);
+}
+
+Token Tokenizer::try_STRING()
+{
+	//cout << "Entered try_String. Input is " + input << endl;
+	if (curChar() != '\'') throw exception("Arrived at try_STRING but char is not '\''!");
+
+	do {
+		if (curChar() == '\n') lineCtr++;
+		pushChar();
+		//cout << "Running string: \"" << tokenValue << curChar() << "\"" << endl;
+	} while ( !(curChar() == '\'' || isEOF()) );
+
+	if (curChar() == '\'') return handleFoundTokenOfType(STRING);
+	else if (isEOF()) return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
 }
 
 
@@ -121,99 +161,95 @@ Token Tokenizer::try_ADD()
 
 Token Tokenizer::try_SCHEMES()
 {
-	if (input.front() != 'S') throw exception("Arrived at try_SCHEMES but char was not 'S'!");
+	if (curChar() != 'S') throw exception("Arrived at try_SCHEMES but char was not 'S'!");
 	else pushChar();
 
-	if (input.front() == 'c') pushChar();
+	if (curChar() == 'c') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'h') pushChar();
+	if (curChar() == 'h') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'e') pushChar();
+	if (curChar() == 'e') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'm') pushChar();
+	if (curChar() == 'm') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'e') pushChar();
+	if (curChar() == 'e') pushChar();
 	else return try_ID();
 
-	if (input.front() == 's') {
-		return handleFoundTokenOfType(SCHEMES);
-	}
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(SCHEMES);
 	else return try_ID();
 }
 
 Token Tokenizer::try_FACTS()
 {
-	if (input.front() != 'F') throw exception("Arrived at try_FACTS but char was not 'F'!");
+	if (curChar() != 'F') throw exception("Arrived at try_FACTS but char was not 'F'!");
 	else pushChar();
 
-	if (input.front() == 'a') pushChar();
+	if (curChar() == 'a') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'c') pushChar();
+	if (curChar() == 'c') pushChar();
 	else return try_ID();
 
-	if (input.front() == 't') pushChar();
+	if (curChar() == 't') pushChar();
 	else return try_ID();
 
-	if (input.front() == 's') {
-		return handleFoundTokenOfType(FACTS);
-	}
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()) )) return handleFoundTokenOfType(FACTS);
 	else return try_ID();
 }
 
 Token Tokenizer::try_QUERIES()
 {
-	if (input.front() != 'Q') throw exception("Arrived at try_QUERIES but char was not 'Q'!");
+	if (curChar() != 'Q') throw exception("Arrived at try_QUERIES but char was not 'Q'!");
 	else pushChar();
 
-	if (input.front() == 'u') pushChar();
+	if (curChar() == 'u') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'e') pushChar();
+	if (curChar() == 'e') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'r') pushChar();
+	if (curChar() == 'r') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'i') pushChar();
+	if (curChar() == 'i') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'e') pushChar();
+	if (curChar() == 'e') pushChar();
 	else return try_ID();
 
-	if (input.front() == 's') {
-		return handleFoundTokenOfType(QUERIES);
-	}
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(QUERIES);
 	else return try_ID();
 }
 
 Token Tokenizer::try_RULES()
 {
-	if (input.front() != 'R') throw exception("Arrived at try_RULES but char was not 'R'!");
+	if (curChar() != 'R') throw exception("Arrived at try_RULES but char was not 'R'!");
 	else pushChar();
 
-	if (input.front() == 'u') pushChar();
+	if (curChar() == 'u') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'l') pushChar();
+	if (curChar() == 'l') pushChar();
 	else return try_ID();
 
-	if (input.front() == 'e') pushChar();
+	if (curChar() == 'e') pushChar();
 	else return try_ID();
 
-	if (input.front() == 's') {
-		return handleFoundTokenOfType(RULES);
-	}
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(RULES);
 	else return try_ID();
 }
 
 Token Tokenizer::try_ID()
 {
-	if (isspace(input.front())) return handleFoundTokenOfType(ID, false);
-	return Token(ID,"This is a false return",500);
+	//cout << "Trying ID for " + tokenValue + curChar() << endl;
+	
+	if (isEOF() || isspace(curChar())) return handleFoundTokenOfType(ID, false);
+	else {
+		pushChar();
+		return try_ID();
+	}
 }
- 

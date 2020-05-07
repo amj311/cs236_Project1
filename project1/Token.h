@@ -10,10 +10,11 @@ using namespace std;
 class Token
 {
 private:
-	TOKEN_TYPE type;
-	string value;
-	int line;
+	TOKEN_TYPE type = EOF_TYPE;
+	string value = "";
+	int line = 0;
 public:
+	Token() {};
 	Token(TOKEN_TYPE type, string value, int line);
 
 	// GETTERS

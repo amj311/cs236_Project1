@@ -13,8 +13,12 @@ public:
 private:
 	string input;
 	string tokenValue = "";
+	int tokenLine = 1;
 	int lineCtr = 1;
-
+	
+	bool isEOF();
+	char curChar();
+	char nextChar();
 	void pushChar();
 	void skipChar();
 	Token handleFoundTokenOfType(TOKEN_TYPE type, bool shouldPush);
@@ -35,6 +39,7 @@ private:
 	Token try_COLON();
 	Token try_MULTIPLY();
 	Token try_ADD();
+	Token try_STRING();
 
 	// Keywords
 	Token try_SCHEMES();
