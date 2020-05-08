@@ -23,13 +23,20 @@ TEST(TokenizerTest, EmptyInput) {
 	string test = "";
 	Tokenizer tokenizer(test);
 	string res1 = tokenizer.getNextToken().toString();
-	EXPECT_EQ(res1, "(EOF,\"\",1)");
+	EXPECT_EQ(res1, "(EOF,\"\",2)");
 }
 TEST(TokenizerTest, EmptyLine) {
 	string test = "\n";
 	Tokenizer tokenizer(test);
 	string res1 = tokenizer.getNextToken().toString();
-	EXPECT_EQ(res1, "(EOF,\"\",1)");
+	EXPECT_EQ(res1, "(EOF,\"\",2)");
+}
+TEST(TokenizerTest, Q_EmptyLinex2) {
+	string test = "Q \n\n";
+	Tokenizer tokenizer(test);
+	tokenizer.getNextToken();
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(EOF,\"\",3)");
 }
 TEST(TokenizerTest, SpacesQueries) {
 	string test = "     Queries:";
@@ -114,6 +121,7 @@ TEST(TokenizerTest, AllSpecialCharacters) {
 TEST(TokenizerTest, _GoodString_) {
 	string test = " 'This is a string.' ";
 	Tokenizer tokenizer(test);
+
 	string res1 = tokenizer.getNextToken().toString();
 	EXPECT_EQ(res1, "(STRING,\"'This is a string.'\",1)");
 }
@@ -122,6 +130,20 @@ TEST(TokenizerTest, _OpenMultilineString_) {
 	Tokenizer tokenizer(test);
 	string res1 = tokenizer.getNextToken().toString();
 	EXPECT_EQ(res1, "(UNDEFINED,\"'This is a\nbad string.\n\n\",1)");
+}
+
+TEST(TokenizerTest, Aposx3) {
+	string test = "'''\n";
+	Tokenizer tokenizer(test);
+	string res1 = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res1, "(STRING,\"'''\",1)");
+}
+TEST(TokenizerTest, EmptyString_EmptyString) {
+	string test = "'' ''\n";
+	Tokenizer tokenizer(test);
+	tokenizer.getNextToken();
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(STRING,\"''\",1)");
 }
 
 
@@ -152,5 +174,24 @@ TEST(TokenizerTest, BadInlineComment) {
 	EXPECT_EQ(res, "(COMMENT,\"#comment \",2)");
 }
 
-
-
+TEST(TokenizerTest, X_comma_y) {
+	string test = "X,Y";
+	Tokenizer tokenizer(test);
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(ID,\"X\",1)");
+}
+TEST(TokenizerTest, x_COMMA_y) {
+	string test = "X,Y";
+	Tokenizer tokenizer(test);
+	tokenizer.getNextToken();
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(COMMA,\",\",1)");
+}
+TEST(TokenizerTest, x_comma_Y) {
+	string test = "X,Y";
+	Tokenizer tokenizer(test);
+	tokenizer.getNextToken();
+	tokenizer.getNextToken();
+	string res = tokenizer.getNextToken().toString();
+	EXPECT_EQ(res, "(ID,\"Y\",1)");
+}

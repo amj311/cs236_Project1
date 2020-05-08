@@ -8,5 +8,21 @@ Lexer::Lexer(string& input)
 
 void Lexer::tokenizeInput()
 {
-	addToken();
+	do {
+		addToken();
+	} while (tokens.back().getType() != EOF_TYPE);
+	printTokens();
+}
+
+void Lexer::addToken()
+{
+	tokens.push_back(tokenizer.getNextToken());
+}
+
+void Lexer::printTokens()
+{
+	for (size_t i = 0; i < tokens.size(); i++) {
+		cout << tokens[i].toString() << endl;
+	}
+	cout << "Total Tokens = " << tokens.size() << endl;
 }

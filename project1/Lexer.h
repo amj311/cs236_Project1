@@ -17,17 +17,9 @@ private:
 	Tokenizer tokenizer;
 	vector<Token> tokens;
 
-	void addToken() {
-		tokens.push_back(tokenizer.getNextToken());
-		cout << "Added a new Token." << endl;
-		printTokens();
-	}
+	void addToken();
 
-	void printTokens() {
-		for (size_t i = 0; i < tokens.size(); i++) {
-			cout << "Tokens:" << endl << tokens[i].toString() << endl;
-		}
-	}
+	void printTokens();
 };
 
 #endif
