@@ -12,6 +12,8 @@ class Lexer
 public:
 	Lexer(string& input); 
 	void tokenizeInput();
+	vector<Token> getTokenList();
+	void printTokens();
 private:
 	string input;
 	Tokenizer tokenizer;
@@ -19,7 +21,6 @@ private:
 
 	void addToken();
 
-	void printTokens();
 };
 
 #endif

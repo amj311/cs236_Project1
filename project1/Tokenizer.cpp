@@ -13,7 +13,7 @@ Token Tokenizer::getNextToken()
 
 bool Tokenizer::isEOF()
 {
-	if (input.size() == 0 || (isspace(curChar()) && input.size() == 1) ) return true;
+	if (input.size() == 0 || (isspace(curChar()) && input.size() == 1)) return true;
 	return false;
 }
 
@@ -35,6 +35,8 @@ void Tokenizer::pushChar()
 
 void Tokenizer::skipChar()
 {
+	if (curChar() == '\n') lineCtr++;
+	lastChar = curChar();
 	input = input.substr(1, input.size() - 1);
 }
 
@@ -48,43 +50,43 @@ Token Tokenizer::state_0()
 {
 	// Whitespaces
 	if (isEOF()) {
-		lineCtr++;
+		if (input.size() > 0) skipChar();
 		tokenLine = lineCtr;
 		return handleFoundTokenOfType(EOF_TYPE, false);
 	}
 
 	if (isspace(curChar())) {
-		if (curChar() == '\n') lineCtr++;
 		skipChar();
 		return state_0();
 	}
 
+	emptyInput = false;
 	tokenLine = lineCtr;
 
 	switch (curChar())
 	{
 		// Special Characters
-		case ',': return try_COMMA();
-		case '.': return try_PERIOD();
-		case '?': return try_Q_MARK();
-		case '(': return try_LEFT_PAREN();
-		case ')': return try_RIGHT_PAREN();
-		case ':': return try_COLON();
-		case '*': return try_MULTIPLY();
-		case '+': return try_ADD();
-		case '\'': return try_STRING();
-		case '#': return try_COMMENT();
-		
-		// Keywords
-		case 'S': return try_SCHEMES();
-		case 'F': return try_FACTS();
-		case 'Q': return try_QUERIES();
-		case 'R': return try_RULES();
+	case ',': return try_COMMA();
+	case '.': return try_PERIOD();
+	case '?': return try_Q_MARK();
+	case '(': return try_LEFT_PAREN();
+	case ')': return try_RIGHT_PAREN();
+	case ':': return try_COLON();
+	case '*': return try_MULTIPLY();
+	case '+': return try_ADD();
+	case '\'': return try_STRING();
+	case '#': return try_COMMENT();
 
-		default:
-			if (isalpha(curChar())) return try_ID();
-			else return handleFoundTokenOfType(UNDEFINED);
-			break;
+		// Keywords
+	case 'S': return try_SCHEMES();
+	case 'F': return try_FACTS();
+	case 'Q': return try_QUERIES();
+	case 'R': return try_RULES();
+
+	default:
+		if (isalpha(curChar())) return try_ID();
+		else return handleFoundTokenOfType(UNDEFINED);
+		break;
 	}
 }
 
@@ -119,11 +121,11 @@ Token Tokenizer::try_RIGHT_PAREN()
 
 Token Tokenizer::try_COLON()
 {
-		if (nextChar() == '-') {
-			pushChar();
-			return handleFoundTokenOfType(COLON_DASH);
-		}
-		else return handleFoundTokenOfType(COLON);
+	if (nextChar() == '-') {
+		pushChar();
+		return handleFoundTokenOfType(COLON_DASH);
+	}
+	else return handleFoundTokenOfType(COLON);
 }
 
 Token Tokenizer::try_MULTIPLY()
@@ -138,54 +140,52 @@ Token Tokenizer::try_ADD()
 
 Token Tokenizer::try_STRING()
 {
-		bool stringEnd = false;
+	pushChar();
 
-		do {
-			if (curChar() == '\n') lineCtr++;
-			pushChar();
-			//cout << "Running string: \"" << tokenValue << curChar() << "\"" << endl;
-			if (curChar() == '\'' && nextChar() == '\'') pushChar();
-			if ((curChar() == '\'' && nextChar() != '\'') || isEOF()) stringEnd = true;
-		} while (!stringEnd);
 
-		if (curChar() == '\'') return handleFoundTokenOfType(STRING);
-		else return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+	if (curChar() == '\'' && nextChar() == '\'') {
+		pushChar();
+		return try_STRING();
+	}
+
+	if (curChar() == '\'' && nextChar() != '\'') return handleFoundTokenOfType(STRING);
+	else if (isEOF()) return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+	else return try_STRING();
 }
 
 Token Tokenizer::try_COMMENT()
 {
-		bool commentEnd = false;
+	bool commentEnd = false;
 
-		// MultiLine Comment
-		if (nextChar() == '|') {
-			pushChar(); // Push #
+	// MultiLine Comment
+	if (nextChar() == '|') {
+		pushChar(); // Push #
 
-			do {
-				if (curChar() == '\n') lineCtr++;
-				pushChar();
-				if ((curChar() == '|' && nextChar() == '#') || isEOF()) commentEnd = true;
-			} while (!commentEnd);
+		do {
+			pushChar();
+			if ((curChar() == '|' && nextChar() == '#') || isEOF()) commentEnd = true;
+		} while (!commentEnd);
 
-			if (curChar() == '|') {
-				pushChar(); // Push |
-				return handleFoundTokenOfType(COMMENT); // Will push #
-			}
-			else return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+		if (curChar() == '|') {
+			pushChar(); // Push |
+			return handleFoundTokenOfType(COMMENT); // Will push #
 		}
+		else return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+	}
 
-		// Inline Comment
-		else {
-			do {
-				pushChar();
-				if (nextChar() == '\n' || isEOF()) commentEnd = true;
-			} while (!commentEnd);
+	// Inline Comment
+	else {
+		do {
+			pushChar();
+			if (nextChar() == '\n' || isEOF()) commentEnd = true;
+		} while (!commentEnd);
 
-			if (nextChar() == '\n') {
-				pushChar(); // Push last char of comment before \n
-				return handleFoundTokenOfType(COMMENT, false);
-			}
-			else return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+		if (nextChar() == '\n') {
+			pushChar(); // Push last char of comment before \n
+			return handleFoundTokenOfType(COMMENT, false);
 		}
+		else return handleFoundTokenOfType(UNDEFINED, (curChar() == '\n'));
+	}
 
 }
 
@@ -198,101 +198,101 @@ Token Tokenizer::try_SCHEMES()
 {
 	pushChar();
 
-		if (curChar() == 'c') pushChar();
-		else return try_ID();
+	if (curChar() == 'c') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'h') pushChar();
-		else return try_ID();
+	if (curChar() == 'h') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'e') pushChar();
-		else return try_ID();
+	if (curChar() == 'e') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'm') pushChar();
-		else return try_ID();
+	if (curChar() == 'm') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'e') pushChar();
-		else return try_ID();
+	if (curChar() == 'e') pushChar();
+	else return try_ID();
 
-		if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(SCHEMES);
-		else return try_ID();
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(SCHEMES);
+	else return try_ID();
 }
 
 Token Tokenizer::try_FACTS()
 {
-		pushChar();
+	pushChar();
 
-		if (curChar() == 'a') pushChar();
-		else return try_ID();
+	if (curChar() == 'a') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'c') pushChar();
-		else return try_ID();
+	if (curChar() == 'c') pushChar();
+	else return try_ID();
 
-		if (curChar() == 't') pushChar();
-		else return try_ID();
+	if (curChar() == 't') pushChar();
+	else return try_ID();
 
-		if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(FACTS);
-		else return try_ID();
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(FACTS);
+	else return try_ID();
 }
 
 Token Tokenizer::try_QUERIES()
 {
-		pushChar();
+	pushChar();
 
-		if (curChar() == 'u') pushChar();
-		else return try_ID();
+	if (curChar() == 'u') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'e') pushChar();
-		else return try_ID();
+	if (curChar() == 'e') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'r') pushChar();
-		else return try_ID();
+	if (curChar() == 'r') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'i') pushChar();
-		else return try_ID();
+	if (curChar() == 'i') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'e') pushChar();
-		else return try_ID();
+	if (curChar() == 'e') pushChar();
+	else return try_ID();
 
-		if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(QUERIES);
-		else return try_ID();
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(QUERIES);
+	else return try_ID();
 }
 
 Token Tokenizer::try_RULES()
 {
-		pushChar();
+	pushChar();
 
-		if (curChar() == 'u') pushChar();
-		else return try_ID();
+	if (curChar() == 'u') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'l') pushChar();
-		else return try_ID();
+	if (curChar() == 'l') pushChar();
+	else return try_ID();
 
-		if (curChar() == 'e') pushChar();
-		else return try_ID();
+	if (curChar() == 'e') pushChar();
+	else return try_ID();
 
-		if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(RULES);
-		else return try_ID();
+	if (curChar() == 's' && (nextChar() == ':' || isspace(nextChar()))) return handleFoundTokenOfType(RULES);
+	else return try_ID();
 }
 
 Token Tokenizer::try_ID()
 {
 	if (isEOF() || isspace(curChar())) return handleFoundTokenOfType(ID, false);
-	
+
 	switch (curChar())
 	{
 		// Special Characters
-		case ',': return handleFoundTokenOfType(ID,false);
-		case '.': return handleFoundTokenOfType(ID,false);
-		case '?': return handleFoundTokenOfType(ID,false);
-		case '(': return handleFoundTokenOfType(ID,false);
-		case ')': return handleFoundTokenOfType(ID,false);
-		case ':': return handleFoundTokenOfType(ID,false);
-		case '*': return handleFoundTokenOfType(ID,false);
-		case '+': return handleFoundTokenOfType(ID,false);
-		case '\'': return handleFoundTokenOfType(ID, false);
-		case '#': return handleFoundTokenOfType(ID, false);
-		default:
-			pushChar();
-			return try_ID();
+	case ',': return handleFoundTokenOfType(ID, false);
+	case '.': return handleFoundTokenOfType(ID, false);
+	case '?': return handleFoundTokenOfType(ID, false);
+	case '(': return handleFoundTokenOfType(ID, false);
+	case ')': return handleFoundTokenOfType(ID, false);
+	case ':': return handleFoundTokenOfType(ID, false);
+	case '*': return handleFoundTokenOfType(ID, false);
+	case '+': return handleFoundTokenOfType(ID, false);
+	case '\'': return handleFoundTokenOfType(ID, false);
+	case '#': return handleFoundTokenOfType(ID, false);
+	default:
+		pushChar();
+		return try_ID();
 	}
 }

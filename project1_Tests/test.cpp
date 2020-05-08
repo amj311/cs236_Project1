@@ -1,6 +1,22 @@
 #include "pch.h"
 #include "../project1/Lexer.h"
 
+#include <fstream>
+
+string getFile(string path) {
+	ifstream ifs(path);
+	return string((istreambuf_iterator<char>(ifs)),
+		(istreambuf_iterator<char>()));
+}
+
+TEST(InputFile, Log) {
+	string file = getFile("../project1/project1-exampleIO/in10.txt");
+	cout << endl << file << endl << endl;
+
+	EXPECT_EQ(file.length(), 89);
+}
+
+
 TEST(TokenTest, ConstrType) {
 	Token token(COMMA, ";", 5);
 	EXPECT_EQ(token.getType(), COMMA);
@@ -23,7 +39,7 @@ TEST(TokenizerTest, EmptyInput) {
 	string test = "";
 	Tokenizer tokenizer(test);
 	string res1 = tokenizer.getNextToken().toString();
-	EXPECT_EQ(res1, "(EOF,\"\",2)");
+	EXPECT_EQ(res1, "(EOF,\"\",1)");
 }
 TEST(TokenizerTest, EmptyLine) {
 	string test = "\n";
@@ -136,7 +152,7 @@ TEST(TokenizerTest, Aposx3) {
 	string test = "'''\n";
 	Tokenizer tokenizer(test);
 	string res1 = tokenizer.getNextToken().toString();
-	EXPECT_EQ(res1, "(STRING,\"'''\",1)");
+	EXPECT_EQ(res1, "(UNDEFINED,\"'''\n\",1)");
 }
 TEST(TokenizerTest, EmptyString_EmptyString) {
 	string test = "'' ''\n";
@@ -187,11 +203,53 @@ TEST(TokenizerTest, x_COMMA_y) {
 	string res = tokenizer.getNextToken().toString();
 	EXPECT_EQ(res, "(COMMA,\",\",1)");
 }
-TEST(TokenizerTest, x_comma_Y) {
-	string test = "X,Y";
+
+
+
+TEST(File10, tokenizer) {
+	string test = getFile("../project1/project1-exampleIO/in10.txt");
+	cout << endl << test << endl;
 	Tokenizer tokenizer(test);
-	tokenizer.getNextToken();
-	tokenizer.getNextToken();
+	for (size_t i = 0; i < 25; i++) {
+		cout << tokenizer.getNextToken().toString() << endl;
+	}
 	string res = tokenizer.getNextToken().toString();
-	EXPECT_EQ(res, "(ID,\"Y\",1)");
+	cout << res << endl;
+	EXPECT_EQ(res, "(EOF,\"\",8)");
+}
+
+TEST(File10, lexer) {
+	string test = getFile("../project1/project1-exampleIO/in10.txt");
+	cout << endl << test << endl;
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	lexer.printTokens();
+	vector<Token> list = lexer.getTokenList();
+	Token res = list[list.size() - 1];
+	EXPECT_EQ(res.toString(), "(EOF,\"\",8)");
+}
+
+
+
+TEST(File19, tokenizer) {
+	string test = getFile("../project1/project1-exampleIO/in19.txt");
+	cout << endl << test << endl;
+	Tokenizer tokenizer(test);
+	for (size_t i = 0; i < 22; i++) {
+		cout << tokenizer.getNextToken().toString() << endl;
+	}
+	string res = tokenizer.getNextToken().toString();
+	cout << res << endl;
+	EXPECT_EQ(res, "(UNDEFINED,\"'this has a\nReturn\nThe end''s near\n\",7)");
+}
+
+TEST(File19, lexer) {
+	string test = getFile("../project1/project1-exampleIO/in19.txt");
+	cout << endl << test << endl;
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	lexer.printTokens();
+	vector<Token> list = lexer.getTokenList();
+	Token res = list[list.size() - 2];
+	EXPECT_EQ(res.toString(), "(UNDEFINED,\"'this has a\nReturn\nThe end''s near\n\",7)");
 }

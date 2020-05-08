@@ -14,6 +14,11 @@ void Lexer::tokenizeInput()
 	printTokens();
 }
 
+vector<Token> Lexer::getTokenList()
+{
+	return tokens;
+}
+
 void Lexer::addToken()
 {
 	tokens.push_back(tokenizer.getNextToken());

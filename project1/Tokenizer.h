@@ -15,10 +15,12 @@ private:
 	string tokenValue = "";
 	int tokenLine = 1;
 	int lineCtr = 1;
+	bool emptyInput = true;
 	
 	bool isEOF();
 	char curChar();
 	char nextChar();
+	char lastChar;
 	void pushChar();
 	void skipChar();
 	Token handleFoundTokenOfType(TOKEN_TYPE type, bool shouldPush);
