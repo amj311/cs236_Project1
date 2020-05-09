@@ -2,9 +2,12 @@
 #define LEXER_H
 
 #include <iostream>
-#include <string>
-#include "Tokenizer.h"
 #include <vector>
+#include <string>
+//#include "Tokenizer.h"
+#include "Token.h"
+#include "Automaton.h"
+#include "FSA_COMMA.h"
 using namespace std;
 
 class Lexer
@@ -14,13 +17,36 @@ public:
 	void tokenizeInput();
 	vector<Token> getTokenList();
 	void printTokens();
+
 private:
 	string input;
-	Tokenizer tokenizer;
+	int lineNumber = 1;
+	//Tokenizer tokenizer;
+	vector<Automaton*> machines = {
+		new FSA_COMMA(),
+	/*
+		COMMA,
+		PERIOD,
+		Q_MARK,
+		LEFT_PAREN,
+		RIGHT_PAREN,
+		COLON,
+		COLON_DASH,
+		MULTIPLY,
+		ADD,
+		STRING,
+		COMMENT,
+		SCHEMES,
+		FACTS,
+		RULES,
+		QUERIES,
+		ID,
+	*/
+	};
 	vector<Token> tokens;
 
-	void addToken();
-
+	Token findNextToken();
+	void checkWhiteSpace();
 };
 
 #endif

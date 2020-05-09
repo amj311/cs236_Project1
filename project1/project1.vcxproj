@@ -138,12 +138,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Automaton.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Token.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Automaton.h" />
+    <ClInclude Include="FSA_COMMA.h" />
     <ClInclude Include="TokenTypes.h" />
     <ClInclude Include="Tokenizer.h" />
     <ClInclude Include="Lexer.h" />
