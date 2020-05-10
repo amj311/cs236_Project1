@@ -7,7 +7,7 @@
 //#include "Tokenizer.h"
 #include "Token.h"
 #include "Automaton.h"
-#include "FSA_COMMA.h"
+#include "FSA_Collection.h"
 using namespace std;
 
 class Lexer
@@ -18,34 +18,32 @@ public:
 	vector<Token> getTokenList();
 	void printTokens();
 
+	Token findNextToken();
+
 private:
 	string input;
 	int lineNumber = 1;
 	//Tokenizer tokenizer;
 	vector<Automaton*> machines = {
 		new FSA_COMMA(),
-	/*
-		COMMA,
-		PERIOD,
-		Q_MARK,
-		LEFT_PAREN,
-		RIGHT_PAREN,
-		COLON,
-		COLON_DASH,
-		MULTIPLY,
-		ADD,
-		STRING,
-		COMMENT,
-		SCHEMES,
-		FACTS,
-		RULES,
-		QUERIES,
-		ID,
-	*/
+		new FSA_PERIOD(),
+		new FSA_Q_MARK(),
+		new FSA_LEFT_PAREN(),
+		new FSA_RIGHT_PAREN(),
+		new FSA_COLON(),
+		new FSA_MULTIPLY(),
+		new FSA_ADD(),
+		new FSA_COMMENT(),
+		new FSA_COMMENT_LONG(),
+		new FSA_STRING(),
+		new FSA_SCHEMES(),
+		new FSA_FACTS(),
+		new FSA_RULES(),
+		new FSA_QUERIES(),
+		//ID,
 	};
 	vector<Token> tokens;
 
-	Token findNextToken();
 	void checkWhiteSpace();
 };
 

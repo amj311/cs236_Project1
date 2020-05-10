@@ -16,7 +16,6 @@ public:
 	string lastRead();
 
 protected:
-	string validChars = "";
 	size_t readIdx = 0;
 
 

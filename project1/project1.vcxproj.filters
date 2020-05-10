@@ -27,9 +27,6 @@
     <ClCompile Include="Tokenizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Automaton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Lexer.h">
@@ -47,7 +44,7 @@
     <ClInclude Include="Automaton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FSA_COMMA.h">
+    <ClInclude Include="FSA_Collection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

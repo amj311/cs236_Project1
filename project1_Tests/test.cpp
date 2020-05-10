@@ -52,6 +52,321 @@ TEST(FSA_COMMA, Bad) {
 	int res = fsa.Read(test);
 	EXPECT_EQ(res, 0);
 }
+TEST(FSA_COMMA, Lexer) {
+	string test = "  ,\n ,";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(COMMA,\",\",2)");
+}
+
+
+TEST(FSA_PERIOD, Good) {
+	string test = "..";
+	FSA_PERIOD fsa = FSA_PERIOD();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_PERIOD, Bad) {
+	string test = "g";
+	FSA_PERIOD fsa = FSA_PERIOD();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_PERIOD, Lexer) {
+	string test = "  .\n .";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(PERIOD,\".\",2)");
+}
+
+
+TEST(FSA_Q_MARK, Good) {
+	string test = "? ?";
+	FSA_Q_MARK fsa = FSA_Q_MARK();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_Q_MARK, Bad) {
+	string test = "g";
+	FSA_Q_MARK fsa = FSA_Q_MARK();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_Q_MARK, Lexer) {
+	string test = "  ?\n ?";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(Q_MARK,\"?\",2)");
+}
+
+
+TEST(FSA_LEFT_PAREN, Good) {
+	string test = "( (";
+	FSA_LEFT_PAREN fsa = FSA_LEFT_PAREN();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_LEFT_PAREN, Bad) {
+	string test = "g";
+	FSA_LEFT_PAREN fsa = FSA_LEFT_PAREN();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_LEFT_PAREN, Lexer) {
+	string test = "  (\n (";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(LEFT_PAREN,\"(\",2)");
+}
+
+
+TEST(FSA_RIGHT_PAREN, Good) {
+	string test = ") )";
+	FSA_RIGHT_PAREN fsa = FSA_RIGHT_PAREN();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_RIGHT_PAREN, Bad) {
+	string test = "g";
+	FSA_RIGHT_PAREN fsa = FSA_RIGHT_PAREN();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_RIGHT_PAREN, Lexer) {
+	string test = "  )\n )";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(RIGHT_PAREN,\")\",2)");
+}
+
+
+TEST(FSA_COLON, Good) {
+	string test = ": :";
+	FSA_COLON fsa = FSA_COLON();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_COLON, Bad) {
+	string test = "g";
+	FSA_COLON fsa = FSA_COLON();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_COLON, COLON_DASH) {
+	string test = ":-";
+	FSA_COLON fsa = FSA_COLON();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 2);
+}
+TEST(FSA_COLON, Lexer) {
+	string test = "  :\n :-";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(COLON_DASH,\":-\",2)");
+}
+
+
+TEST(FSA_MULTIPLY, Good) {
+	string test = "* *";
+	FSA_MULTIPLY fsa = FSA_MULTIPLY();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_MULTIPLY, Bad) {
+	string test = "g";
+	FSA_MULTIPLY fsa = FSA_MULTIPLY();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_MULTIPLY, Lexer) {
+	string test = "  *\n *";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(MULTIPLY,\"*\",2)");
+}
+
+
+TEST(FSA_ADD, Good) {
+	string test = "+ +";
+	FSA_ADD fsa = FSA_ADD();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_ADD, Bad) {
+	string test = "g";
+	FSA_ADD fsa = FSA_ADD();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_ADD, Lexer) {
+	string test = "  +\n +";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(ADD,\"+\",2)");
+}
+
+
+
+TEST(FSA_SCHEMES, Good) {
+	string test = "Schemes";
+	FSA_SCHEMES fsa = FSA_SCHEMES();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 7);
+}
+TEST(FSA_SCHEMES, Bad) {
+	string test = "SCHEMES";
+	FSA_SCHEMES fsa = FSA_SCHEMES();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_SCHEMES, Lexer) {
+	string test = "  Schemes\n Schemes";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(SCHEMES,\"Schemes\",2)");
+}
+
+
+TEST(FSA_FACTS, Good) {
+	string test = "Facts";
+	FSA_FACTS fsa = FSA_FACTS();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 5);
+}
+TEST(FSA_FACTS, Bad) {
+	string test = "FACTS";
+	FSA_FACTS fsa = FSA_FACTS();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_FACTS, Lexer) {
+	string test = "  Facts\n Facts";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(FACTS,\"Facts\",2)");
+}
+
+
+TEST(FSA_RULES, Good) {
+	string test = "Rules";
+	FSA_RULES fsa = FSA_RULES();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 5);
+}
+TEST(FSA_RULES, Bad) {
+	string test = "RULES";
+	FSA_RULES fsa = FSA_RULES();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_RULES, Lexer) {
+	string test = "  Rules\n Rules";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(RULES,\"Rules\",2)");
+}
+
+
+TEST(FSA_QUERIES, Good) {
+	string test = "Queries";
+	FSA_QUERIES fsa = FSA_QUERIES();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 7);
+}
+TEST(FSA_QUERIES, Bad) {
+	string test = "QUERIES";
+	FSA_QUERIES fsa = FSA_QUERIES();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_QUERIES, Lexer) {
+	string test = "  Queries\n Queries";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(QUERIES,\"Queries\",2)");
+}
+
+
+
+
+
+TEST(FSA_COMMENT, Good) {
+	string test = "# This is a comment.";
+	FSA_COMMENT fsa = FSA_COMMENT();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 20);
+}
+TEST(FSA_COMMENT, Bad) {
+	string test = "COMMENT";
+	FSA_COMMENT fsa = FSA_COMMENT();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 0);
+}
+TEST(FSA_COMMENT, Lexer) {
+	string test = "  # This is a comment.\n # This is a comment.";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(COMMENT,\"# This is a comment.\",2)");
+}
+
+
+
+
+
+TEST(FSA_COMMENT_LONG, Good) {
+	string test = "#| This is a \n comment. |#";
+	FSA_COMMENT_LONG fsa = FSA_COMMENT_LONG();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 26);
+}
+TEST(FSA_COMMENT_LONG, Bad) {
+	string test = "# This is a \n comment. |#";
+	FSA_COMMENT_LONG fsa = FSA_COMMENT_LONG();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 1);
+}
+TEST(FSA_COMMENT_LONG, BAD_EOF) {
+	string test = "#| This is a |";
+	FSA_COMMENT_LONG fsa = FSA_COMMENT_LONG();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 14);
+}
+TEST(FSA_COMMENT_LONG, Lexer) {
+	string test = "  #| This is a c #| omment.\n # This is a comment.|#";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[0].toString();
+	EXPECT_EQ(res, "(COMMENT,\"#| This is a c #| omment.\n # This is a comment.|#\",1)");
+}
+
+
 
 
 
@@ -76,173 +391,173 @@ TEST(LexerTest, EmptyNewline) {
 
 
 
-//TEST(TokenizerTest, Q_EmptyLinex2) {
-//	string test = "Q \n\n";
-//	Tokenizer tokenizer(test);
-//	tokenizer.getNextToken();
-//	string res = tokenizer.getNextToken().toString();
-//	EXPECT_EQ(res, "(EOF,\"\",3)");
-//}
-//TEST(TokenizerTest, SpacesQueries) {
+TEST(LexerTest, Q_EmptyLinex2) {
+	string test = "Q \n\n";
+	Lexer lexer(test);
+	lexer.findNextToken();
+	string res = lexer.findNextToken().toString();
+	EXPECT_EQ(res, "(EOF,\"\",3)");
+}
+//TEST(LexerTest, SpacesQueries) {
 //	string test = "     Queries:";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(QUERIES,\"Queries\",1)");
 //}
-//TEST(TokenizerTest, TabsRules) {
+//TEST(LexerTest, TabsRules) {
 //	string test = "\t\tRules:";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(RULES,\"Rules\",1)");
 //}
-//TEST(TokenizerTest, NewlinesQueries) {
+//TEST(LexerTest, NewlinesQueries) {
 //	string test = "\n\nQueries:";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(QUERIES,\"Queries\",3)");
 //}
-//TEST(TokenizerTest, QueriesColon1) {
+//TEST(LexerTest, QueriesColon1) {
 //	string test = "Queries:";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(QUERIES,\"Queries\",1)");
 //}
-//TEST(TokenizerTest, QueriesColon2) {
+//TEST(LexerTest, QueriesColon2) {
 //	string test = "Queries:";
-//	Tokenizer tokenizer(test);
-//	tokenizer.getNextToken();
-//	string res2 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	lexer.findNextToken();
+//	string res2 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res2, "(COLON,\":\",1)");
 //}
-//TEST(TokenizerTest, FactsSpace) {
+//TEST(LexerTest, FactsSpace) {
 //	string test = "Facts ";
-//	Tokenizer tokenizer(test);
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(FACTS,\"Facts\",1)");
 //}
-//TEST(TokenizerTest, FactsSEnd) {
+//TEST(LexerTest, FactsSEnd) {
 //	string test = "Factss";
-//	Tokenizer tokenizer(test);
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(ID,\"Factss\",1)");
 //}
-//TEST(TokenizerTest, SchemSpace) {
+//TEST(LexerTest, SchemSpace) {
 //	string test = "Schem ";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(ID,\"Schem\",1)");
 //}
 //
-//TEST(TokenizerTest, ColonDash) {
+//TEST(LexerTest, ColonDash) {
 //	string test = ":-";
-//	Tokenizer tokenizer(test);
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(COLON_DASH,\":-\",1)");
 //}
-//TEST(TokenizerTest, ColonDashComma) {
+//TEST(LexerTest, ColonDashComma) {
 //	string test = ":-,";
-//	Tokenizer tokenizer(test);
-//	tokenizer.getNextToken();
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	lexer.findNextToken();
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(COMMA,\",\",1)");
 //}
-//TEST(TokenizerTest, AllSpecialCharacters) {
+//TEST(LexerTest, AllSpecialCharacters) {
 //	string test = ",.?()::-*+";
 //	Token token(COMMA,",",5);
-//	Tokenizer tokenizer(test);
+//	Lexer lexer(test);
 //	string res = "";
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
-//	res += token.TOKEN_STRINGS[tokenizer.getNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
+//	res += token.TOKEN_STRINGS[lexer.findNextToken().getType()];
 //	EXPECT_EQ(res, "COMMAPERIODQ_MARKLEFT_PARENRIGHT_PARENCOLONCOLON_DASHMULTIPLYADD");
 //}
 //
-//TEST(TokenizerTest, _GoodString_) {
-//	string test = " 'This is a string.' ";
-//	Tokenizer tokenizer(test);
+TEST(LexerTest, _GoodString_) {
+	string test = " 'This is a string.' ";
+	Lexer lexer(test);
+
+	string res1 = lexer.findNextToken().toString();
+	EXPECT_EQ(res1, "(STRING,\"'This is a string.'\",1)");
+}
+TEST(LexerTest, _OpenMultilineString_) {
+	string test = " 'This is a\nbad string.\n\n";
+	Lexer lexer(test);
+	string res1 = lexer.findNextToken().toString();
+	EXPECT_EQ(res1, "(UNDEFINED,\"'This is a\nbad string.\n\n\",1)");
+}
 //
-//	string res1 = tokenizer.getNextToken().toString();
-//	EXPECT_EQ(res1, "(STRING,\"'This is a string.'\",1)");
-//}
-//TEST(TokenizerTest, _OpenMultilineString_) {
-//	string test = " 'This is a\nbad string.\n\n";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
-//	EXPECT_EQ(res1, "(UNDEFINED,\"'This is a\nbad string.\n\n\",1)");
-//}
-//
-//TEST(TokenizerTest, Aposx3) {
+//TEST(LexerTest, Aposx3) {
 //	string test = "'''\n";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(UNDEFINED,\"'''\n\",1)");
 //}
-//TEST(TokenizerTest, EmptyString_EmptyString) {
+//TEST(LexerTest, EmptyString_EmptyString) {
 //	string test = "'' ''\n";
-//	Tokenizer tokenizer(test);
-//	tokenizer.getNextToken();
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	lexer.findNextToken();
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(STRING,\"''\",1)");
 //}
 //
 //
-//TEST(TokenizerTest, GoodMultilineComment) {
+//TEST(LexerTest, GoodMultilineComment) {
 //	string test = "\n#|comment >= \nwow|#\n";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(COMMENT,\"#|comment >= \nwow|#\",2)");
 //}
-//TEST(TokenizerTest, BadMultilineComment_EOF) {
+//TEST(LexerTest, BadMultilineComment_EOF) {
 //	string test = "\n#|comment >= \nwow| \n";
-//	Tokenizer tokenizer(test);
-//	string res1 = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res1 = lexer.findNextToken().toString();
 //	EXPECT_EQ(res1, "(UNDEFINED,\"#|comment >= \nwow| \n\",2)");
 //}
-//TEST(TokenizerTest, GoodInlineComment) {
+//TEST(LexerTest, GoodInlineComment) {
 //	string test = "\nQueries #comment >= wow| \n";
-//	Tokenizer tokenizer(test);
-//	tokenizer.getNextToken();
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	lexer.findNextToken();
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(COMMENT,\"#comment >= wow| \",2)");
 //}
-//TEST(TokenizerTest, BadInlineComment) {
+//TEST(LexerTest, BadInlineComment) {
 //	string test = "\nQueries #comment \n>= wow| \n";
-//	Tokenizer tokenizer(test);
-//	tokenizer.getNextToken();
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	lexer.findNextToken();
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(COMMENT,\"#comment \",2)");
 //}
 //
-//TEST(TokenizerTest, X_comma_y) {
+//TEST(LexerTest, X_comma_y) {
 //	string test = "X,Y";
-//	Tokenizer tokenizer(test);
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(ID,\"X\",1)");
 //}
-//TEST(TokenizerTest, x_COMMA_y) {
+//TEST(LexerTest, x_COMMA_y) {
 //	string test = "X,Y";
-//	Tokenizer tokenizer(test);
-//	tokenizer.getNextToken();
-//	string res = tokenizer.getNextToken().toString();
+//	Lexer lexer(test);
+//	lexer.findNextToken();
+//	string res = lexer.findNextToken().toString();
 //	EXPECT_EQ(res, "(COMMA,\",\",1)");
 //}
 //
 //
 //
-//TEST(File10, tokenizer) {
+//TEST(File10, lexer) {
 //	string test = getFile("../project1/project1-exampleIO/in10.txt");
 //	cout << endl << test << endl;
-//	Tokenizer tokenizer(test);
+//	Lexer lexer(test);
 //	for (size_t i = 0; i < 25; i++) {
-//		cout << tokenizer.getNextToken().toString() << endl;
+//		cout << lexer.findNextToken().toString() << endl;
 //	}
-//	string res = tokenizer.getNextToken().toString();
+//	string res = lexer.findNextToken().toString();
 //	cout << res << endl;
 //	EXPECT_EQ(res, "(EOF,\"\",8)");
 //}
@@ -260,14 +575,14 @@ TEST(LexerTest, EmptyNewline) {
 //
 //
 //
-//TEST(File19, tokenizer) {
+//TEST(File19, lexer) {
 //	string test = getFile("../project1/project1-exampleIO/in19.txt");
 //	cout << endl << test << endl;
-//	Tokenizer tokenizer(test);
+//	Lexer lexer(test);
 //	for (size_t i = 0; i < 22; i++) {
-//		cout << tokenizer.getNextToken().toString() << endl;
+//		cout << lexer.findNextToken().toString() << endl;
 //	}
-//	string res = tokenizer.getNextToken().toString();
+//	string res = lexer.findNextToken().toString();
 //	cout << res << endl;
 //	EXPECT_EQ(res, "(UNDEFINED,\"'this has a\nReturn\nThe end''s near\n\",7)");
 //}
