@@ -10,6 +10,7 @@ class Automaton
 {
 public:
 	Automaton() {};
+	virtual ~Automaton() = default;
 
 	virtual int Read(string& input) = 0;
 	TOKEN_TYPE type = UNDEFINED;

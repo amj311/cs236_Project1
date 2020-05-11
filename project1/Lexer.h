@@ -14,6 +14,12 @@ class Lexer
 {
 public:
 	Lexer(string& input); 
+	~Lexer() {
+		for (size_t m = 0; m < machines.size(); m++) {
+			delete machines[m];
+		}
+	}
+
 	void tokenizeInput();
 	vector<Token> getTokenList();
 	void printTokens();

@@ -290,6 +290,7 @@ class FSA_ID : public virtual Automaton
 {
 public:
 	FSA_ID() { type = ID; };
+	~FSA_ID() {};
 
 	int Read(string& input) {
 		readIdx = 0;
