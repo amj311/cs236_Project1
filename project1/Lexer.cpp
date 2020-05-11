@@ -23,7 +23,7 @@ Token Lexer::findNextToken()
 	checkWhiteSpace();
 	if (input.length() <= 0) return Token(EOF_TYPE, "", lineNumber);
 	size_t mWinner;
-	for (rsize_t m = 0; m < machines.size(); m++)
+	for (size_t m = 0; m < machines.size(); m++)
 	{
 		int charsRead = machines[m]->Read(input);
 		if (charsRead > longestRead) {
@@ -33,13 +33,15 @@ Token Lexer::findNextToken()
 	}
 	Token token;
 	if (longestRead > 0) token = Token(machines[mWinner]->type, input.substr(0,longestRead), lineNumber);
-	else token = Token(UNDEFINED, input.substr(1), lineNumber);
+	else {
+		token = Token(UNDEFINED, input.substr(0,1), lineNumber);
+	}
 
 	for (size_t c = 0; c < token.getValue().length(); c++) {
 		if (input[c] == '\n') lineNumber++;
 	}
 
-	input = input.substr(longestRead);
+	input = input.substr(token.getValue().length());
 
 	return token;
 }

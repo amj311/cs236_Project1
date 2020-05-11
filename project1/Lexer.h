@@ -40,7 +40,7 @@ private:
 		new FSA_FACTS(),
 		new FSA_RULES(),
 		new FSA_QUERIES(),
-		//ID,
+		new FSA_ID(),
 	};
 	vector<Token> tokens;
 

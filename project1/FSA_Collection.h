@@ -109,6 +109,8 @@ public:
 
 	int Read(string& input) {
 		readIdx = 0;
+		type = COLON;
+
 		if (curCharOf(input) == ':') {
 			advanceChar();
 			if (curCharOf(input) == '-') {
@@ -147,6 +149,7 @@ public:
 
 	int Read(string& input) {
 		readIdx = 0;
+		type = COMMENT;
 
 		if (curCharOf(input) == '#') {
 			advanceChar();
@@ -178,12 +181,9 @@ class FSA_STRING : public virtual Automaton
 public:
 	FSA_STRING() { type = STRING; };
 
-	void try_STRING(string& input) {
-		
-	}
-
 	int Read(string& input) {
 		readIdx = 0;
+		type = STRING;
 
 		if (curCharOf(input) == '\'') {
 			
@@ -222,7 +222,7 @@ public:
 		
 		while (readIdx < token.length()) {
 			if (curCharOf(input) == curCharOf(token)) advanceChar();
-			else break;
+			else return 0;
 		}
 
 		return readIdx;
@@ -240,7 +240,7 @@ public:
 
 		while (readIdx < token.length()) {
 			if (curCharOf(input) == curCharOf(token)) advanceChar();
-			else break;
+			else return 0;
 		}
 
 		return readIdx;
@@ -258,7 +258,7 @@ public:
 
 		while (readIdx < token.length()) {
 			if (curCharOf(input) == curCharOf(token)) advanceChar();
-			else break;
+			else return 0;
 		}
 
 		return readIdx;
@@ -276,7 +276,7 @@ public:
 
 		while (readIdx < token.length()) {
 			if (curCharOf(input) == curCharOf(token)) advanceChar();
-			else break;
+			else return 0;
 		}
 
 		return readIdx;
@@ -284,6 +284,43 @@ public:
 };
 
 
+
+
+class FSA_ID : public virtual Automaton
+{
+public:
+	FSA_ID() { type = ID; };
+
+	int Read(string& input) {
+		readIdx = 0;
+		
+		if (!isalpha(curCharOf(input))) return readIdx;
+
+		while (readIdx < input.length()) {
+			//if (!isalpha(curCharOf(input)) || isspace(curCharOf(input))) return readIdx;
+			if (isspace(curCharOf(input))) return readIdx;
+
+			switch (curCharOf(input))
+			{
+				// Special Characters
+			case ',': return readIdx;
+			case '.': return readIdx;
+			case '?': return readIdx;
+			case '(': return readIdx;
+			case ')': return readIdx;
+			case ':': return readIdx;
+			case '*': return readIdx;
+			case '+': return readIdx;
+			case '\'': return readIdx;
+			case '#': return readIdx;
+			default:
+				advanceChar();
+			}
+		}
+
+		return readIdx;
+	}
+};
 
 
 
