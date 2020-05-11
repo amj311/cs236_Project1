@@ -132,7 +132,7 @@ public:
 	int Read(string& input) {
 		readIdx = 0;
 
-		if (curCharOf(input) == '#') {
+		if (curCharOf(input) == '#' && nextCharOf(input) != '|') {
 			while (readIdx < input.length()) {
 				if (curCharOf(input) == '\n') break;
 				else advanceChar();

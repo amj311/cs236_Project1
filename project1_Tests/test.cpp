@@ -351,6 +351,12 @@ TEST(FSA_COMMENT_LONG, Bad) {
 	int res = fsa.Read(test);
 	EXPECT_EQ(res, 1);
 }
+TEST(FSA_COMMENT_LONG, Double) {
+	string test = "#| One |##| Two |# Queries";
+	FSA_COMMENT_LONG fsa = FSA_COMMENT_LONG();
+	int res = fsa.Read(test);
+	EXPECT_EQ(res, 9);
+}
 TEST(FSA_COMMENT_LONG, BAD_EOF) {
 	string test = "#| This is a |";
 	FSA_COMMENT_LONG fsa = FSA_COMMENT_LONG();
@@ -358,12 +364,28 @@ TEST(FSA_COMMENT_LONG, BAD_EOF) {
 	EXPECT_EQ(res, 14);
 }
 TEST(FSA_COMMENT_LONG, Lexer) {
+	string test = "  #| This is a c #| omment.\n # This is a comment.";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[0].toString();
+	EXPECT_EQ(res, "(UNDEFINED,\"#| This is a c #| omment.\n # This is a comment.\",1)");
+}
+TEST(FSA_COMMENT_LONG, LexerBad) {
 	string test = "  #| This is a c #| omment.\n # This is a comment.|#";
 	Lexer lexer(test);
 	lexer.tokenizeInput();
 	vector<Token> tokens = lexer.getTokenList();
 	string res = tokens[0].toString();
 	EXPECT_EQ(res, "(COMMENT,\"#| This is a c #| omment.\n # This is a comment.|#\",1)");
+}
+TEST(FSA_COMMENT_LONG, LexerDouble) {
+	string test = "#| One |##| Two |# Queries";
+	Lexer lexer(test);
+	lexer.tokenizeInput();
+	vector<Token> tokens = lexer.getTokenList();
+	string res = tokens[1].toString();
+	EXPECT_EQ(res, "(COMMENT,\"#| Two |#\",1)");
 }
 
 
